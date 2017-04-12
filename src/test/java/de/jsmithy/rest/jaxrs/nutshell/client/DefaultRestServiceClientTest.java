@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import java.net.*;
 
-import javax.ws.rs.client.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 
 import org.junit.*;
+import org.junit.runners.MethodSorters;
 
 /**
  * Unit test the default implementation of type RestServiceClient.
@@ -17,6 +17,7 @@ import org.junit.*;
  * @since 2016-07-09
  * 
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DefaultRestServiceClientTest {
 	private static URI DEFAULT_URI;
 	private RestServiceClient sut;
@@ -31,6 +32,13 @@ public class DefaultRestServiceClientTest {
 		sut = new DefaultRestServiceClient.Builder(DEFAULT_URI).build();
 	}
 
+	@After
+	public void tearDown() {
+		if (sut.isConversationStarted()) {
+			sut.closeConversation();
+		}
+	}
+	
 	@Test
 	public void getResourceUri() throws URISyntaxException {
 		URI result = sut.getResourceUri();
@@ -115,35 +123,6 @@ public class DefaultRestServiceClientTest {
 		assertNull("Response is not 'null' after instance creation.", initialResponse);
 	}
 
-	@Test
-	public void asserThatRestClientIsAvailableAfterInstanceHasBeenCreated() {
-		Client restClient = ((DefaultRestServiceClient)sut).getRestClient();
-		
-		assertNotNull("[restClient] has not been initialized correctly.", restClient);
-	}
-	
-	@Test
-	public void asserThatWebTargetIsAvailableAfterInstanceHasBeenCreated() {
-		WebTarget webTarget = ((DefaultRestServiceClient)sut).getWebTarget();
-		
-		assertNotNull("[webTarget] has not been initialized correctly.", webTarget);
-		assertEquals("URI of [webTarget] has not been set correctly.", DEFAULT_URI, webTarget.getUri());
-	}
-	
-	@Test(expected=IllegalStateException.class)
-	public void finalizeLeadsToRestClientNoLongerUsable() throws Throwable {
-		Client restClient = ((DefaultRestServiceClient)sut).getRestClient();
-		
-		// Invoke an arbitrary method which is perfectly legal.
-		restClient.target("");
-		
-		// Finalize our sut which closes the 'restClient'.
-		((DefaultRestServiceClient)sut).finalize();
-		
-		// Invoke again a method which is now no longer legal.
-		restClient.target("");
-	}
-	
 	@Test
 	public void evaluateSuccessfulResponse() {
 		Response response = Response.ok().build();

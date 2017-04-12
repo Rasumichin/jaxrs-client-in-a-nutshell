@@ -1,6 +1,6 @@
 package de.jsmithy.rest.jaxrs.nutshell.client;
 
-import java.net.URI;
+import java.net.*;
 import java.util.List;
 
 import javax.ws.rs.client.*;
@@ -23,10 +23,12 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	private Client restClient;
 	private Response response;
 
+	DefaultRestServiceClient() throws URISyntaxException {
+		this(new URI("http://jsmithy.de/resources"));
+	}
+	
 	private DefaultRestServiceClient(URI anUri) {
 		setResourceUri(anUri);
-		createRestClient();
-		setWebTarget(getRestClient());
 	}
 
 	private void setResourceUri(URI anUri) {
@@ -36,12 +38,40 @@ public class DefaultRestServiceClient implements RestServiceClient {
 		resourceUri = anUri;
 	}
 	
-	private void createRestClient() {
-		restClient = ClientBuilder.newClient();
+	@Override
+	public void openConversation() {
+		if (isConversationStarted()) {
+			throw new IllegalStateException("Cannot open a conversation when it has been already openend.");
+		}
+		initRestClient();
+	}
+
+	private void initRestClient() {
+		restClient = createRestClient();
+		webTarget = getRestClient().target(getResourceUri());
+	}
+
+	Client createRestClient() {
+		return ClientBuilder.newClient();
 	}
 	
-	private void setWebTarget(Client aRestClient) {
-		webTarget = aRestClient.target(getResourceUri());
+	@Override
+	public void closeConversation() {
+		if (!isConversationStarted()) {
+			throw new IllegalStateException("Cannot close conversation before it has been started.");
+		}
+		destroyRestClient();
+	}
+
+	private void destroyRestClient() {
+		getRestClient().close();
+		webTarget = null;
+		restClient = null;
+	}
+
+	@Override
+	public boolean isConversationStarted() {
+		return getRestClient() != null;
 	}
 
 	// This 'private' method is package protected for testing purposes.
@@ -206,24 +236,6 @@ public class DefaultRestServiceClient implements RestServiceClient {
 		if (!statusFamily.equals(Response.Status.Family.SUCCESSFUL)) {
 			throw new RestServiceClientException(this);
 		}
-	}
-
-	/**
-	 * Closes the 'heavyweight' resource 'restClient' on finalization. Although this way is known as a 'smell'
-	 * - not 100 percent reliable and might introduce a performance drawback - I decided to go this way to
-	 * release the developer from maintaining a kind of life cycle when using this little REST client framework.
-	 * 
-	 * I measured the performance with and without overriding 'finalize()'. Implementing this method comes with
-	 * an extra cost of about 1 millisecond, which is fine.
-	 * 
-	 * @author Erik Lotz
-	 * 
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		getRestClient().close();
-
-		super.finalize();
 	}
 
 	@Override

@@ -2,27 +2,24 @@ package de.jsmithy.rest.jaxrs.nutshell.client;
 
 import static org.junit.Assert.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.List;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.client.*;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.*;
 
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.runners.MethodSorters;
 
 /**
+ * Using this integration test to play with the JAX-RS client API.
+ * 
  * @author Erik Lotz
  * @since 2016-07-02
  * 
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class NativeRestServiceClientIT {
 	private static final String JSON_TEST_URI = "http://jsonplaceholder.typicode.com";
 	private static URI JSON_PLACEHOLDER_URI;
