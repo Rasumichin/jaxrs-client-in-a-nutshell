@@ -14,6 +14,10 @@ import javax.ws.rs.core.Response;
  * 
  */
 public interface RestServiceClient {
+	void openConversation();
+	void closeConversation();
+	boolean isConversationStarted();
+
 	URI getResourceUri();
 	Response getResponse();
 	
