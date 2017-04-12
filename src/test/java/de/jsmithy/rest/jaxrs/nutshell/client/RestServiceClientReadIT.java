@@ -8,15 +8,17 @@ import java.util.List;
 import javax.ws.rs.core.GenericType;
 
 import org.junit.*;
+import org.junit.runners.MethodSorters;
 
 /**
  * Integration tests for the default implementation of type RestServiceClient.
- * This tests verify the read aspect (GET method) of the CRUD functionality.
+ * These tests verify the read aspect (GET method) of the CRUD functionality.
  * 
  * @author Erik Lotz
  * @since 2016-07-10
  * 
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RestServiceClientReadIT {
 	private static URI DEFAULT_URI;
 	
