@@ -87,7 +87,7 @@ public class RestServiceClientCrudIT {
 	}
 
 	@Test
-	public void readListOfCustomType() {
+	public void testReadListOfCustomType() {
 		sut.setPath("posts");
 		
 		List<JsonPlaceholderPost> result = sut.read(new GenericType<List<JsonPlaceholderPost>>() {});
