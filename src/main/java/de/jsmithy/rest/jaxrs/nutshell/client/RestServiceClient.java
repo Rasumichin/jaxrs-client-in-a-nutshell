@@ -27,15 +27,10 @@ public interface RestServiceClient {
 	MediaType getMediaType();
 	void setMediaType(MediaType mediaType);
 	
-	
 	<T> void create(T type);
 
 	<T> T read(Class<T> type);
-
-	// TODO (Erik, 2016-07-09): Maybe we manage to implement this signature to avoid REST-Client dependency on the caller's side.
-	// <T> List<T> readList(Class<T> aClass);
-	
-	<T> T read(GenericType<T> genericType);
+	<T> T readList(GenericType<T> genericType);
 
 	<T> void update(T type);
 

@@ -90,7 +90,7 @@ public class RestServiceClientCrudIT {
 	public void testReadListOfCustomType() {
 		sut.setPath("posts");
 		
-		List<JsonPlaceholderPost> result = sut.read(new GenericType<List<JsonPlaceholderPost>>() {});
+		List<JsonPlaceholderPost> result = sut.readList(new GenericType<List<JsonPlaceholderPost>>() {});
 
 		assertNotNull("Conversion of JSON payload to a list of custom types was not correct.", result);
 		assertFalse("Result does not contain any element.", result.isEmpty());

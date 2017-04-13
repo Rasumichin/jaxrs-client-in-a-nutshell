@@ -183,27 +183,8 @@ public class DefaultRestServiceClient implements RestServiceClient {
 		return result;
 	}
 
-	/**
-	 * I was not able at the first go to implement this successfully.
-	 * Question is:
-	 * How to pass the given class 'aClass' as a type to the List type of the
-	 * 'GenericType'subclass?
-	 * This code does not work so I let the method here for further notice, but
-	 * remove the method from the interface.
-	 * 
-	 * @author Erik Lotz
-	 * 
-	 */
-	public <T> List<T> readList(Class<T> aClass) {
-		GenericType<List<T>> genericType = new GenericType<List<T>>() {};
-		return (List<T>) getWebTarget()
-				.path(getPath())
-				.request(getMediaType())
-				.get(genericType);
-	}
-
 	@Override
-	public <T> T read(GenericType<T> genericType) {
+	public <T> T readList(GenericType<T> genericType) {
 		T result = null;
 		response = getWebTarget()
 				.path(getPath())
