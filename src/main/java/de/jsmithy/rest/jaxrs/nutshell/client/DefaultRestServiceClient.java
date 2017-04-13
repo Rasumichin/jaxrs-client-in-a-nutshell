@@ -1,7 +1,6 @@
 package de.jsmithy.rest.jaxrs.nutshell.client;
 
 import java.net.*;
-import java.util.List;
 
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.*;
@@ -24,12 +23,14 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	private Response response;
 
 	/**
-	 * Add this default constructor with this visibility just for
-	 * one purpose: Allow stubbing of instances of this type.
+	 * Add a default constructor with this visibility just for
+	 * ONE purpose: Allow stubbing of instances of this type while
+	 * doing unit tests.
 	 * 
-	 * Creates an instance of this type with a fictional URI.
+	 * Creates an instance of this type with a FICTIONAL URI.
 	 * 
 	 * @throws URISyntaxException
+	 * 
 	 */
 	DefaultRestServiceClient() throws URISyntaxException {
 		this(new URI("http://jsmithy.de/resources"));
@@ -44,52 +45,6 @@ public class DefaultRestServiceClient implements RestServiceClient {
 			throw new IllegalArgumentException("Argument [anUri] must not be 'null'.");
 		}
 		resourceUri = anUri;
-	}
-	
-	@Override
-	public void openConversation() {
-		if (isConversationStarted()) {
-			throw new IllegalStateException("Cannot open a conversation when it has been already openend.");
-		}
-		initRestClient();
-	}
-
-	private void initRestClient() {
-		restClient = createRestClient();
-		webTarget = getRestClient().target(getResourceUri());
-	}
-
-	Client createRestClient() {
-		return ClientBuilder.newClient();
-	}
-	
-	@Override
-	public void closeConversation() {
-		if (!isConversationStarted()) {
-			throw new IllegalStateException("Cannot close conversation before it has been started.");
-		}
-		destroyRestClient();
-	}
-
-	private void destroyRestClient() {
-		getRestClient().close();
-		webTarget = null;
-		restClient = null;
-	}
-
-	@Override
-	public boolean isConversationStarted() {
-		return getRestClient() != null;
-	}
-
-	// This 'private' method is package protected for testing purposes.
-	Client getRestClient() {
-		return restClient;
-	}
-	
-	// This 'private' method is package protected for testing purposes.
-	WebTarget getWebTarget() {
-		return webTarget;
 	}
 	
 	public static class Builder {
@@ -118,6 +73,53 @@ public class DefaultRestServiceClient implements RestServiceClient {
 			
 			return restServiceClient;
 		}
+	}
+	
+	@Override
+	public void openConversation() {
+		if (isConversationStarted()) {
+			throw new IllegalStateException("Cannot open a conversation when it has been already openend.");
+		}
+		initRestClient();
+	}
+
+	@Override
+	public boolean isConversationStarted() {
+		return getRestClient() != null;
+	}
+
+	private void initRestClient() {
+		restClient = createRestClient();
+		webTarget = getRestClient().target(getResourceUri());
+	}
+
+	// This 'private' method is package protected for testing purposes.
+	Client createRestClient() {
+		return ClientBuilder.newClient();
+	}
+	
+	// This 'private' method is package protected for testing purposes.
+	Client getRestClient() {
+		return restClient;
+	}
+	
+	@Override
+	public void closeConversation() {
+		if (!isConversationStarted()) {
+			throw new IllegalStateException("Cannot close conversation before it has been started.");
+		}
+		destroyRestClient();
+	}
+
+	private void destroyRestClient() {
+		getRestClient().close();
+		webTarget = null;
+		restClient = null;
+	}
+
+	// This 'private' method is package protected for testing purposes.
+	WebTarget getWebTarget() {
+		return webTarget;
 	}
 	
 	@Override
@@ -175,8 +177,8 @@ public class DefaultRestServiceClient implements RestServiceClient {
 		
 		// TODO (EL, 2016-07-16): replace this with response evaluation type that might throw a runtime exception.
 		if (getResponse().getStatusInfo() == Status.OK) {
-			if (response.hasEntity()) {
-				result = response.readEntity(type);
+			if (getResponse().hasEntity()) {
+				result = getResponse().readEntity(type);
 			}
 		}
 		
@@ -193,8 +195,8 @@ public class DefaultRestServiceClient implements RestServiceClient {
 
 		// TODO (EL, 2016-07-16): replace this with response evaluation type that might throw a runtime exception.
 		if (getResponse().getStatusInfo() == Status.OK) {
-			if (response.hasEntity()) {
-				result = response.readEntity(genericType);
+			if (getResponse().hasEntity()) {
+				result = getResponse().readEntity(genericType);
 			}
 		}
 		
