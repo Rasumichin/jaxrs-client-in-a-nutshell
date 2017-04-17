@@ -25,7 +25,7 @@ public class NativeRestServiceClientIT {
 	private static URI JSON_PLACEHOLDER_URI;
 	
 	private JsonPlaceholderPost jsonPlaceholderCustomType = getJsonPlaceholderCustomType();
-	private Client restClient = ClientBuilder.newClient();;
+	private Client restClient = ClientBuilder.newClient();
 
 	private JsonPlaceholderPost getJsonPlaceholderCustomType() {
 		JsonPlaceholderPost customType = new JsonPlaceholderPost();
@@ -43,12 +43,12 @@ public class NativeRestServiceClientIT {
 	}
 
 	@After
-	public void tearDownClass() {
+	public void tearDown() {
 		restClient.close();
 	}
 
 	@Test
-	public void getServiceAndReadCustomTypeFromResponse() {
+	public void testGetServiceAndReadCustomTypeFromResponse() {
 		StatusType expectedStatus = Status.OK;
 
 		Response result = restClient.target(JSON_PLACEHOLDER_URI)
@@ -65,7 +65,7 @@ public class NativeRestServiceClientIT {
 	}
 
 	@Test
-	public void getServiceAndReadListOfCustomTypeFromResponse() {
+	public void testGetServiceAndReadListOfCustomTypeFromResponse() {
 		StatusType expectedStatus = Status.OK;
 
 		// According to 'http://jsonplaceholder.typicode.com/posts' this should always return 100 elements.
@@ -82,7 +82,7 @@ public class NativeRestServiceClientIT {
 	}
 
 	@Test
-	public void postServiceAndUseResponseAsResultType() {
+	public void testPostServiceAndUseResponseAsResultType() {
 		StatusType expectedStatus = Status.CREATED;
 		
 		Response result = restClient.target(JSON_PLACEHOLDER_URI)
@@ -101,7 +101,7 @@ public class NativeRestServiceClientIT {
 	}
 	
 	@Test
-	public void deleteServiceAndCheckResponseStatus() {
+	public void testDeleteServiceAndCheckResponseStatus() {
 		StatusType expectedStatus = Status.OK;
 		
 		Response result = restClient.target(JSON_PLACEHOLDER_URI)
@@ -113,7 +113,7 @@ public class NativeRestServiceClientIT {
 	}
 
 	@Test
-	public void putServiceAndComparePassedCustomTypeToReturnedCustomType() {
+	public void testPutServiceAndComparePassedCustomTypeToReturnedCustomType() {
 		StatusType expectedStatus = Status.OK;
 		jsonPlaceholderCustomType.setId(1);
 		
