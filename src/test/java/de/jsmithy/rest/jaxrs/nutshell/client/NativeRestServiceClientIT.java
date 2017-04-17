@@ -48,7 +48,7 @@ public class NativeRestServiceClientIT {
 	}
 
 	@Test
-	public void testGetServiceAndReadCustomTypeFromResponse() {
+	public void testGetRequest_readCustomTypeFromResponse() {
 		StatusType expectedStatus = Status.OK;
 
 		Response result = restClient.target(JSON_PLACEHOLDER_URI)
@@ -65,7 +65,7 @@ public class NativeRestServiceClientIT {
 	}
 
 	@Test
-	public void testGetServiceAndReadListOfCustomTypeFromResponse() {
+	public void testGetRequest_readListOfCustomTypeFromResponse() {
 		StatusType expectedStatus = Status.OK;
 
 		// According to 'http://jsonplaceholder.typicode.com/posts' this should always return 100 elements.
@@ -82,7 +82,7 @@ public class NativeRestServiceClientIT {
 	}
 
 	@Test
-	public void testPostServiceAndUseResponseAsResultType() {
+	public void testPostRequest_verifyResponseType() {
 		StatusType expectedStatus = Status.CREATED;
 		
 		Response result = restClient.target(JSON_PLACEHOLDER_URI)
@@ -101,7 +101,7 @@ public class NativeRestServiceClientIT {
 	}
 	
 	@Test
-	public void testDeleteServiceAndCheckResponseStatus() {
+	public void testDeleteRequest() {
 		StatusType expectedStatus = Status.OK;
 		
 		Response result = restClient.target(JSON_PLACEHOLDER_URI)
@@ -113,7 +113,7 @@ public class NativeRestServiceClientIT {
 	}
 
 	@Test
-	public void testPutServiceAndComparePassedCustomTypeToReturnedCustomType() {
+	public void testPutRequest_comparePassedCustomTypeWithReturnedCustomType() {
 		StatusType expectedStatus = Status.OK;
 		jsonPlaceholderCustomType.setId(1);
 		
@@ -126,5 +126,27 @@ public class NativeRestServiceClientIT {
 		
 		JsonPlaceholderPost resultType = result.readEntity(JsonPlaceholderPost.class);
 		assertEquals("Result of PUT request does not correspond to provided custom type.", jsonPlaceholderCustomType , resultType);
+	}
+
+	@Test
+	public void testGetRequest_thenPutRequest() {
+		StatusType expectedStatus = Status.OK;
+
+		Response result = restClient.target(JSON_PLACEHOLDER_URI)
+				.path("posts/1")
+				.request(MediaType.APPLICATION_JSON)
+				.get(Response.class);
+		
+		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
+		
+		JsonPlaceholderPost postWithId1 = result.readEntity(JsonPlaceholderPost.class);
+		postWithId1.setTitle("Some changed title");
+
+		result = restClient.target(JSON_PLACEHOLDER_URI)
+				.path("posts/1")
+				.request(MediaType.APPLICATION_JSON)
+				.put(Entity.json(postWithId1), Response.class);
+
+		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
 	}
 }
