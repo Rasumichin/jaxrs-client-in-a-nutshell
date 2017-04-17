@@ -24,22 +24,16 @@ public class NativeRestServiceClientIT {
 	private static final String JSON_TEST_URI = "http://jsonplaceholder.typicode.com";
 	private static URI JSON_PLACEHOLDER_URI;
 	
-	private JsonPlaceholderPost jsonPlaceholderCustomType = getJsonPlaceholderCustomType();
-	private Client restClient = ClientBuilder.newClient();
+	private Client restClient;
 
-	private JsonPlaceholderPost getJsonPlaceholderCustomType() {
-		JsonPlaceholderPost customType = new JsonPlaceholderPost();
-		customType.setId(101);
-		customType.setUserId(10);
-		customType.setTitle("my custom title");
-		customType.setBody("my custom body");
-		
-		return customType;
-	}
-	
 	@BeforeClass
 	public static void setUpClass() throws URISyntaxException {
 		JSON_PLACEHOLDER_URI = new URI(JSON_TEST_URI);
+	}
+	
+	@Before
+	public void setUp() {
+		restClient = ClientBuilder.newClient();
 	}
 
 	@After
@@ -56,12 +50,12 @@ public class NativeRestServiceClientIT {
 				.request(MediaType.APPLICATION_JSON)
 				.get(Response.class);
 		
-		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
-		assertTrue("Response does not contain an entity in its body.", result.hasEntity());
+		assertEquals("Expected HTTP status is not matched!", expectedStatus, result.getStatusInfo());
+		assertTrue("Response does not contain an entity in its body!", result.hasEntity());
 		
 		JsonPlaceholderPost resultType = result.readEntity(JsonPlaceholderPost.class);
-		assertNotNull("Conversion of JSON payload to a custom type was not correct.", resultType);
-		assertEquals("Custom type has not the correct [id].", 1, resultType.getId());
+		assertNotNull("Conversion of JSON payload to custom type was not correct!", resultType);
+		assertEquals("Custom type has not the correct [id]!", 1, resultType.getId());
 	}
 
 	@Test
@@ -76,28 +70,28 @@ public class NativeRestServiceClientIT {
 				.request(MediaType.APPLICATION_JSON)
 				.get(Response.class);
 		
-		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
+		assertEquals("Expected HTTP status is not matched!", expectedStatus, result.getStatusInfo());
+		
 		List<JsonPlaceholderPost> resultTypeList = result.readEntity(new GenericType<List<JsonPlaceholderPost>>() {});
-		assertEquals("Result of GET request does not have the correct number of elements.", expectedSize, resultTypeList.size());
+		assertEquals("Response body does not contain the correct number of elements!", expectedSize, resultTypeList.size());
 	}
 
 	@Test
 	public void testPostRequest_verifyResponseType() {
 		StatusType expectedStatus = Status.CREATED;
+		JsonPlaceholderPost customType = getJsonPlaceholderCustomType();
 		
 		Response result = restClient.target(JSON_PLACEHOLDER_URI)
 			.path("posts")
 			.request(MediaType.APPLICATION_JSON)
-			.post(Entity.json(jsonPlaceholderCustomType), Response.class);
+			.post(Entity.json(customType), Response.class);
 		
-		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
-		assertTrue("Response does not contain any content in its body.", result.hasEntity());
+		assertEquals("Expected HTTP status is not matched!", expectedStatus, result.getStatusInfo());
+		assertTrue("Response does not contain any content in its body!", result.hasEntity());
 		
 		JsonPlaceholderPost resultType = result.readEntity(JsonPlaceholderPost.class);
-		assertNotNull("POST request does not deliver a custom type result.", resultType);
-		assertEquals("Result of POST request does not correspond to provided custom type.", jsonPlaceholderCustomType , resultType);
-		
-		assertEquals("Response contains unexpected Hypermedia links.", 0, result.getLinks().size());
+		assertEquals("Response body does not correspond to provided custom type!", customType, resultType);
+		assertEquals("Response contains unexpected Hypermedia links!", 0, result.getLinks().size());
 	}
 	
 	@Test
@@ -109,23 +103,24 @@ public class NativeRestServiceClientIT {
 				.request()
 				.delete();
 		
-		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
+		assertEquals("Expected HTTP status is not matched!", expectedStatus, result.getStatusInfo());
 	}
 
 	@Test
 	public void testPutRequest_comparePassedCustomTypeWithReturnedCustomType() {
 		StatusType expectedStatus = Status.OK;
-		jsonPlaceholderCustomType.setId(1);
+		JsonPlaceholderPost customType = getJsonPlaceholderCustomType();
+		customType.setId(1);
 		
 		Response result = restClient.target(JSON_PLACEHOLDER_URI)
 			.path("posts/1")
 			.request(MediaType.APPLICATION_JSON)
-			.put(Entity.json(jsonPlaceholderCustomType), Response.class);
+			.put(Entity.json(customType), Response.class);
 		
-		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
+		assertEquals("Expected HTTP status is not matched!", expectedStatus, result.getStatusInfo());
 		
 		JsonPlaceholderPost resultType = result.readEntity(JsonPlaceholderPost.class);
-		assertEquals("Result of PUT request does not correspond to provided custom type.", jsonPlaceholderCustomType , resultType);
+		assertEquals("Response body does not correspond to provided custom type!", customType, resultType);
 	}
 
 	@Test
@@ -137,7 +132,7 @@ public class NativeRestServiceClientIT {
 				.request(MediaType.APPLICATION_JSON)
 				.get(Response.class);
 		
-		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
+		assertEquals("Expected HTTP status is not matched!", expectedStatus, result.getStatusInfo());
 		
 		JsonPlaceholderPost postWithId1 = result.readEntity(JsonPlaceholderPost.class);
 		postWithId1.setTitle("Some changed title");
@@ -147,6 +142,16 @@ public class NativeRestServiceClientIT {
 				.request(MediaType.APPLICATION_JSON)
 				.put(Entity.json(postWithId1), Response.class);
 
-		assertEquals("Expected HTTP status is not matched.", expectedStatus, result.getStatusInfo());
+		assertEquals("Expected HTTP status is not matched!", expectedStatus, result.getStatusInfo());
+	}
+
+	private JsonPlaceholderPost getJsonPlaceholderCustomType() {
+		JsonPlaceholderPost customType = new JsonPlaceholderPost();
+		customType.setId(101);
+		customType.setUserId(10);
+		customType.setTitle("my custom title");
+		customType.setBody("my custom body");
+		
+		return customType;
 	}
 }
