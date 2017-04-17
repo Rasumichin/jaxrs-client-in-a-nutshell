@@ -2,9 +2,7 @@ package de.jsmithy.rest.jaxrs.nutshell.client;
 
 import java.net.URI;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 
 /**
  * Defines the necessary interactions to call REST services hiding the details of the JAX-RS client API.
@@ -24,8 +22,8 @@ public interface RestServiceClient {
 	String getPath();
 	void setPath(String path);
 	
-	MediaType getMediaType();
-	void setMediaType(MediaType mediaType);
+	RestMediaType getMediaType();
+	void setMediaType(RestMediaType mediaType);
 	
 	<T> void create(T type);
 

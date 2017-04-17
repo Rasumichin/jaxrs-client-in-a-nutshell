@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response.Status.Family;
 public class DefaultRestServiceClient implements RestServiceClient {
 	private URI resourceUri;
 	private String path;
-	private MediaType mediaType;
+	private RestMediaType mediaType;
 	private WebTarget webTarget;
 	private Client restClient;
 	private Response response;
@@ -50,7 +50,7 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	public static class Builder {
 		private final URI resourceUri;
 		private String path = "";
-		private MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_JSON);
+		private RestMediaType mediaType = RestMediaType.JSON;
 
 		public Builder(URI anUri) {
 			resourceUri = anUri;
@@ -61,7 +61,7 @@ public class DefaultRestServiceClient implements RestServiceClient {
 			return this;
 		}
 		
-		public Builder withMediaType(MediaType aMediaType) {
+		public Builder withMediaType(RestMediaType aMediaType) {
 			mediaType = aMediaType;
 			return this;
 		}
@@ -146,23 +146,27 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	}
 
 	@Override
-	public MediaType getMediaType() {
+	public RestMediaType getMediaType() {
 		return mediaType ;
 	}
 
 	@Override
-	public void setMediaType(MediaType aMediaType) {
+	public void setMediaType(RestMediaType aMediaType) {
 		if (aMediaType == null) {
 			throw new IllegalArgumentException("Argument [aMediaType] must not be 'null'.");
 		}
 		mediaType = aMediaType;
+	}
+	
+	private MediaType getJaxRsMediaType() {
+		return getMediaType().getMediaType();
 	}
 
 	@Override
 	public <T> void create(T type) {
 		response = getWebTarget()
 				.path(getPath())
-				.request(getMediaType())
+				.request(getJaxRsMediaType())
 				// TODO (EL, 2016-07-10): fix JSON format here; check how to implement this with regard to MediaType.
 				.post(Entity.json(type), Response.class);
 	}
@@ -172,7 +176,7 @@ public class DefaultRestServiceClient implements RestServiceClient {
 		T result = null;
 		response = getWebTarget()
 				.path(getPath())
-				.request(getMediaType())
+				.request(getJaxRsMediaType())
 				.get(Response.class);
 		
 		// TODO (EL, 2016-07-16): replace this with response evaluation type that might throw a runtime exception.
@@ -190,7 +194,7 @@ public class DefaultRestServiceClient implements RestServiceClient {
 		T result = null;
 		response = getWebTarget()
 				.path(getPath())
-				.request(getMediaType())
+				.request(getJaxRsMediaType())
 				.get(Response.class);
 
 		// TODO (EL, 2016-07-16): replace this with response evaluation type that might throw a runtime exception.
@@ -207,7 +211,7 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	public <T> void update(T type) {
 		response = getWebTarget()
 				.path(getPath())
-				.request(getMediaType())
+				.request(getJaxRsMediaType())
 				// TODO (EL, 2016-07-10): fix JSON format here; check how to implement this with regard to MediaType.
 				.put(Entity.json(type), Response.class);
 	}

@@ -53,18 +53,19 @@ public class DefaultRestServiceClientTest {
 	
 	@Test
 	public void getDefaultMediaType() {
-		MediaType expectedMediaType = MediaType.valueOf(MediaType.APPLICATION_JSON);
+		RestMediaType expectedMediaType = RestMediaType.JSON;
 
-		MediaType result = sut.getMediaType();
+		RestMediaType result = sut.getMediaType();
 		assertEquals("Received [mediaType] is not as expected.", expectedMediaType, result);
 	}
 	
 	@Test
 	public void setMediaType() {
-		MediaType expectedMediaType = MediaType.valueOf(MediaType.APPLICATION_XML);
+		RestMediaType expectedMediaType = RestMediaType.XML;
 		
 		sut.setMediaType(expectedMediaType);
-		MediaType result = sut.getMediaType();
+		
+		RestMediaType result = sut.getMediaType();
 		assertEquals("Received MediaType does not match set MediaType.", expectedMediaType, result);
 	}
 	
@@ -75,12 +76,13 @@ public class DefaultRestServiceClientTest {
 	
 	@Test
 	public void setMediaTypeWithBuilder() {
-		MediaType expectedMediaType = MediaType.valueOf(MediaType.APPLICATION_XML);
+		RestMediaType expectedMediaType = RestMediaType.XML;
+		
 		RestServiceClient sut = new DefaultRestServiceClient.Builder(DEFAULT_URI)
 				.withMediaType(expectedMediaType)
 				.build();
 		
-		MediaType result = sut.getMediaType();
+		RestMediaType result = sut.getMediaType();
 		assertEquals("Received [mediaType] is not as expected.", expectedMediaType, result);
 	}
 
