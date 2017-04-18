@@ -1,5 +1,6 @@
 package de.jsmithy.rest.jaxrs.nutshell.client;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -17,12 +18,22 @@ public enum RestMediaType {
 	/**
 	 * Use this media type if the content should be of {@code application/json}.
 	 */
-	JSON (MediaType.APPLICATION_JSON_TYPE),
+	JSON (MediaType.APPLICATION_JSON_TYPE) {
+		@Override
+		public <T> Entity<T> getEntity(T type) {
+			return Entity.json(type);
+		}
+	},
 
 	/**
 	 * Use this media type if the content should be of {@code application/xml}.
 	 */
-	XML (MediaType.APPLICATION_XML_TYPE);
+	XML (MediaType.APPLICATION_XML_TYPE) {
+		@Override
+		public <T> Entity<T> getEntity(T type) {
+			return Entity.xml(type);
+		}
+	};
 	
 	private final MediaType mediaType;
 	
@@ -39,4 +50,14 @@ public enum RestMediaType {
 	public MediaType getMediaType() {
 		return mediaType;
 	}
+
+	/**
+	 * Creates a JAX-RS {@link Entity} representation for the given type depending on the underlying {@link MediaType}
+	 * which could be JSON, XML etc.
+	 * 
+	 * @param type A generic type that should be represented as a JAX-RS Entity.
+	 * @return A JAX-RS Entity ({@link Entity}) representation of the given type.
+	 * 
+	 */
+	public abstract <T> Entity<T> getEntity(T type);
 }
