@@ -164,11 +164,11 @@ public class DefaultRestServiceClient implements RestServiceClient {
 
 	@Override
 	public <T> void create(T type) {
+		Entity<T> entity = getMediaType().getEntity(type);
 		response = getWebTarget()
 				.path(getPath())
 				.request(getJaxRsMediaType())
-				// TODO (EL, 2016-07-10): fix JSON format here; check how to implement this with regard to MediaType.
-				.post(Entity.json(type), Response.class);
+				.post(entity, Response.class);
 	}
 
 	@Override
@@ -209,11 +209,11 @@ public class DefaultRestServiceClient implements RestServiceClient {
 
 	@Override
 	public <T> void update(T type) {
+		Entity<T> entity = getMediaType().getEntity(type);
 		response = getWebTarget()
 				.path(getPath())
 				.request(getJaxRsMediaType())
-				// TODO (EL, 2016-07-10): fix JSON format here; check how to implement this with regard to MediaType.
-				.put(Entity.json(type), Response.class);
+				.put(entity, Response.class);
 	}
 
 	@Override
