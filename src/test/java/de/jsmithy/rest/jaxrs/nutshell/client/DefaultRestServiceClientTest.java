@@ -148,4 +148,13 @@ public class DefaultRestServiceClientTest {
 		Response response = Response.status(Status.USE_PROXY).build();
 		((DefaultRestServiceClient)sut).evaluateResponse(response);
 	}
+	
+	@Test
+	public void testToString() {
+		String expected = "DefaultRestServiceClient [resourceUri=http://jsmithy.de/resources]";
+		
+		String actual = sut.toString();
+		
+		assertEquals("String representation is not correct!", expected, actual);
+	}
 }

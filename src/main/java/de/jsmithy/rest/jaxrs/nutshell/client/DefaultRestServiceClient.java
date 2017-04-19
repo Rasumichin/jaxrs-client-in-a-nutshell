@@ -234,8 +234,6 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	public String toString() {
 		return getClass().getSimpleName()
 				+ " [resourceUri=" + getResourceUri()
-				+ ", path=" + getPath()
-				+ ", mediaType=" + getMediaType()
 				+ "]";
 	}
 }
