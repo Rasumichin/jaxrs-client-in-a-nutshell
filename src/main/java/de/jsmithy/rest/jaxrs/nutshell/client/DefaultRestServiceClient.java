@@ -37,6 +37,12 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	
 	private DefaultRestServiceClient(URI anUri) {
 		setResourceUri(anUri);
+		setPath("");
+		setMediaType(RestMediaType.JSON);
+	}
+
+	public static RestServiceClient newInstance(URI anUri) {
+		return new DefaultRestServiceClient(anUri);
 	}
 
 	private void setResourceUri(URI anUri) {

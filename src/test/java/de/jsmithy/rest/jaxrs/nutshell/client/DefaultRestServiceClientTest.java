@@ -29,7 +29,7 @@ public class DefaultRestServiceClientTest {
 	
 	@Before
 	public void setUp() throws URISyntaxException {
-		sut = new DefaultRestServiceClient.Builder(DEFAULT_URI).build();
+		sut = DefaultRestServiceClient.newInstance(DEFAULT_URI);
 	}
 
 	@After
@@ -38,17 +38,23 @@ public class DefaultRestServiceClientTest {
 			sut.closeConversation();
 		}
 	}
+
+	@Test
+	public void testNewInstance() {
+		RestServiceClient sut = DefaultRestServiceClient.newInstance(DEFAULT_URI);
+		
+		assertNotNull("Instance could not be created!", sut);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testNewInstance_with_null() {
+		DefaultRestServiceClient.newInstance(null);
+	}
 	
 	@Test
 	public void getResourceUri() throws URISyntaxException {
 		URI result = sut.getResourceUri();
 		assertEquals("Received URI does not match expected URI.", DEFAULT_URI, result);
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void createInstanceWithIllegalNullUri() {
-		@SuppressWarnings("unused")
-		RestServiceClient sut = new DefaultRestServiceClient.Builder(null).build();
 	}
 	
 	@Test
