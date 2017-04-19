@@ -81,18 +81,6 @@ public class DefaultRestServiceClientTest {
 	}
 	
 	@Test
-	public void setMediaTypeWithBuilder() {
-		RestMediaType expectedMediaType = RestMediaType.XML;
-		
-		RestServiceClient sut = new DefaultRestServiceClient.Builder(DEFAULT_URI)
-				.withMediaType(expectedMediaType)
-				.build();
-		
-		RestMediaType result = sut.getMediaType();
-		assertEquals("Received [mediaType] is not as expected.", expectedMediaType, result);
-	}
-
-	@Test
 	public void getDefaultPath() {
 		String expectedPath = "";
 		String result = sut.getPath();
@@ -114,17 +102,6 @@ public class DefaultRestServiceClientTest {
 		sut.setPath(null);
 	}
 
-	@Test
-	public void setPathWithBuilder() {
-		String expectedPath = "sample/1";
-		RestServiceClient sut = new DefaultRestServiceClient.Builder(DEFAULT_URI)
-				.withPath(expectedPath)
-				.build();
-		
-		String result = sut.getPath();
-		assertEquals("Received [path] is not as expected.", expectedPath, result);
-	}
-	
 	@Test
 	public void getInitialResponse() {
 		Response initialResponse = sut.getResponse();

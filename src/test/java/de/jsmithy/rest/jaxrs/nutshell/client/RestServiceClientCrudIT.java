@@ -32,8 +32,7 @@ public class RestServiceClientCrudIT {
 	
 	@Before
 	public void setUp() {
-		sut = new DefaultRestServiceClient.Builder(DEFAULT_URI)
-				.build();
+		sut = DefaultRestServiceClient.newInstance(DEFAULT_URI);
 		sut.openConversation();
 	}
 	

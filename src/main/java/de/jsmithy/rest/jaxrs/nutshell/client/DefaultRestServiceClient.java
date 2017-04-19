@@ -52,34 +52,6 @@ public class DefaultRestServiceClient implements RestServiceClient {
 		resourceUri = anUri;
 	}
 	
-	public static class Builder {
-		private final URI resourceUri;
-		private String path = "";
-		private RestMediaType mediaType = RestMediaType.JSON;
-
-		public Builder(URI anUri) {
-			resourceUri = anUri;
-		}
-
-		public Builder withPath(String aPath) {
-			path = aPath;
-			return this;
-		}
-		
-		public Builder withMediaType(RestMediaType aMediaType) {
-			mediaType = aMediaType;
-			return this;
-		}
-
-		public RestServiceClient build() {
-			DefaultRestServiceClient restServiceClient = new DefaultRestServiceClient(resourceUri);
-			restServiceClient.setPath(path);
-			restServiceClient.setMediaType(mediaType);
-			
-			return restServiceClient;
-		}
-	}
-	
 	@Override
 	public void openConversation() {
 		if (isConversationStarted()) {
