@@ -21,14 +21,13 @@ import org.junit.runners.MethodSorters;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class NativeRestServiceClientIT {
-	private static final String JSON_TEST_URI = "http://jsonplaceholder.typicode.com";
 	private static URI JSON_PLACEHOLDER_URI;
 	
 	private Client restClient;
 
 	@BeforeClass
 	public static void setUpClass() throws URISyntaxException {
-		JSON_PLACEHOLDER_URI = new URI(JSON_TEST_URI);
+		JSON_PLACEHOLDER_URI = new URI("http://jsonplaceholder.typicode.com");
 	}
 	
 	@Before
