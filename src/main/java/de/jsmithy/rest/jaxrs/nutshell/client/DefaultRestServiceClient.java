@@ -18,7 +18,6 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	private URI resourceUri;
 	private String path;
 	private RestMediaType mediaType;
-	private WebTarget webTarget;
 	private Client restClient;
 	private Response response;
 
@@ -90,7 +89,6 @@ public class DefaultRestServiceClient implements RestServiceClient {
 
 	private void initRestClient() {
 		restClient = createRestClient();
-		webTarget = getRestClient().target(getResourceUri());
 	}
 
 	// This 'private' method is package protected for testing purposes.
@@ -113,15 +111,9 @@ public class DefaultRestServiceClient implements RestServiceClient {
 
 	private void destroyRestClient() {
 		getRestClient().close();
-		webTarget = null;
 		restClient = null;
 	}
 
-	// This 'private' method is package protected for testing purposes.
-	WebTarget getWebTarget() {
-		return webTarget;
-	}
-	
 	@Override
 	public URI getResourceUri() {
 		return resourceUri;
@@ -165,7 +157,8 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	@Override
 	public <T> void create(T type) {
 		Entity<T> entity = getMediaType().getEntity(type);
-		response = getWebTarget()
+		response = getRestClient()
+				.target(getResourceUri())
 				.path(getPath())
 				.request(getJaxRsMediaType())
 				.post(entity, Response.class);
@@ -174,7 +167,8 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	@Override
 	public <T> T read(Class<T> type) {
 		T result = null;
-		response = getWebTarget()
+		response = getRestClient()
+				.target(getResourceUri())
 				.path(getPath())
 				.request(getJaxRsMediaType())
 				.get(Response.class);
@@ -192,7 +186,8 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	@Override
 	public <T> T readList(GenericType<T> genericType) {
 		T result = null;
-		response = getWebTarget()
+		response = getRestClient()
+				.target(getResourceUri())
 				.path(getPath())
 				.request(getJaxRsMediaType())
 				.get(Response.class);
@@ -210,7 +205,8 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	@Override
 	public <T> void update(T type) {
 		Entity<T> entity = getMediaType().getEntity(type);
-		response = getWebTarget()
+		response = getRestClient()
+				.target(getResourceUri())
 				.path(getPath())
 				.request(getJaxRsMediaType())
 				.put(entity, Response.class);
@@ -219,7 +215,8 @@ public class DefaultRestServiceClient implements RestServiceClient {
 	@Override
 	public void delete(String pathToResourceId) {
 		String pathWithResourceId = getPath() + '/' + pathToResourceId;
-		response = getWebTarget()
+		response = getRestClient()
+				.target(getResourceUri())
 				.path(pathWithResourceId)
 				.request()
 				.delete();
