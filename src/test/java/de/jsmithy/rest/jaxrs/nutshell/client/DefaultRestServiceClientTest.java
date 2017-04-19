@@ -52,82 +52,87 @@ public class DefaultRestServiceClientTest {
 	}
 	
 	@Test
-	public void getResourceUri() throws URISyntaxException {
-		URI result = sut.getResourceUri();
-		assertEquals("Received URI does not match expected URI.", DEFAULT_URI, result);
+	public void testGetResourceUri() throws URISyntaxException {
+		URI actual = sut.getResourceUri();
+		
+		assertEquals("Received URI does not match expected URI.", DEFAULT_URI, actual);
 	}
 	
 	@Test
-	public void getDefaultMediaType() {
-		RestMediaType expectedMediaType = RestMediaType.JSON;
+	public void testGetDefaultMediaType() {
+		RestMediaType expected = RestMediaType.JSON;
 
-		RestMediaType result = sut.getMediaType();
-		assertEquals("Received [mediaType] is not as expected.", expectedMediaType, result);
+		RestMediaType actual = sut.getMediaType();
+		
+		assertEquals("Received [mediaType] is not as expected.", expected, actual);
 	}
 	
 	@Test
-	public void setMediaType() {
-		RestMediaType expectedMediaType = RestMediaType.XML;
+	public void testSetMediaType() {
+		RestMediaType expected = RestMediaType.XML;
 		
-		sut.setMediaType(expectedMediaType);
+		sut.setMediaType(expected);
 		
-		RestMediaType result = sut.getMediaType();
-		assertEquals("Received MediaType does not match set MediaType.", expectedMediaType, result);
+		RestMediaType actual = sut.getMediaType();
+		assertEquals("Received MediaType does not match set MediaType.", expected, actual);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void setMediaTypeToIllegalNullValue() {
+	public void testSetMediaType_with_null() {
 		sut.setMediaType(null);
 	}
 	
 	@Test
-	public void getDefaultPath() {
-		String expectedPath = "";
-		String result = sut.getPath();
+	public void testGetDefaultPath() {
+		String expected = "";
 		
-		assertEquals("Received [path] is not as expected.", expectedPath, result);
+		String actual = sut.getPath();
+		
+		assertEquals("Received [path] is not as expected.", expected, actual);
 	}
 	
 	@Test
-	public void setPath() {
-		String expectedPath = "sample/1";
-		sut.setPath(expectedPath);
+	public void testSetPath() {
+		String expected = "sample/1";
+		
+		sut.setPath(expected);
 
-		String result = sut.getPath();
-		assertEquals("Received [path] is not as expected.", expectedPath, result);
+		String actual = sut.getPath();
+		assertEquals("Received [path] is not as expected.", expected, actual);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void setPathToIllegalNullValue() {
+	public void testSetPath_with_null() {
 		sut.setPath(null);
 	}
 
 	@Test
-	public void getInitialResponse() {
-		Response initialResponse = sut.getResponse();
-		assertNull("Response is not 'null' after instance creation.", initialResponse);
+	public void testGetDefaultResponse() {
+		Response result = sut.getResponse();
+		
+		assertNull("Response is not 'null' after instance creation.", result);
 	}
 
 	@Test
-	public void evaluateSuccessfulResponse() {
+	public void testEvaluateSuccessfulResponse() {
 		Response response = Response.ok().build();
 		((DefaultRestServiceClient)sut).evaluateResponse(response);
 	}
 	
 	@Test(expected=RestServiceClientException.class)
-	public void evaluateUnsuccessfulResponseForStatus5XX() {
+	public void testEvaluateUnsuccessfulResponseForStatus5XX() {
 		Response response = Response.status(Status.SERVICE_UNAVAILABLE).build();
 		((DefaultRestServiceClient)sut).evaluateResponse(response);
 	}
 
 	@Test(expected=RestServiceClientException.class)
-	public void evaluateUnsuccessfulResponseForStatus4XX() {
+	public void testEvaluateUnsuccessfulResponseForStatus4XX() {
 		Response response = Response.status(Status.NOT_FOUND).build();
 		((DefaultRestServiceClient)sut).evaluateResponse(response);
 	}
 
 	@Test(expected=RestServiceClientException.class)
-	public void evaluateUnsuccessfulResponseForStatus3XX() {
+	public void testEvaluateUnsuccessfulResponseForStatus3XX() {
 		Response response = Response.status(Status.USE_PROXY).build();
 		((DefaultRestServiceClient)sut).evaluateResponse(response);
 	}
