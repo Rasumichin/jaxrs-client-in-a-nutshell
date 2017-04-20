@@ -60,10 +60,7 @@ public class JsonPlaceholderPost {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((body == null) ? 0 : body.hashCode());
 		result = prime * result + id;
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + userId;
 		return result;
 	}
 
@@ -76,19 +73,7 @@ public class JsonPlaceholderPost {
 		if (getClass() != obj.getClass())
 			return false;
 		JsonPlaceholderPost other = (JsonPlaceholderPost) obj;
-		if (body == null) {
-			if (other.body != null)
-				return false;
-		} else if (!body.equals(other.body))
-			return false;
 		if (id != other.id)
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
-			return false;
-		if (userId != other.userId)
 			return false;
 		return true;
 	}
