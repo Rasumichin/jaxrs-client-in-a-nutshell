@@ -12,8 +12,17 @@ import org.junit.*;
 import org.junit.runners.MethodSorters;
 
 /**
- * Integration tests for the default implementation of type RestServiceClient.
- * This tests verify the create aspect (POST method) of the CRUD functionality.
+ * Integrational tests for the default implementation of type RestServiceClient.
+ * Running these tests require an existing Internet connection, because they try
+ * to interact with a mocked REST endpoint provided at {@code http://jsonplaceholder.typicode.com}.
+ * 
+ * These tests cover the entire CRUD functionality:
+ * <ul>
+ *  <li>Create a resource</li>
+ *  <li>Read resources</li>
+ *  <li>Update a resource</li>
+ *  <li>Delete a resource</li>
+ * </ul>
  * 
  * @author Erik Lotz
  * @since 2016-07-10
@@ -45,13 +54,14 @@ public class RestServiceClientCrudIT {
 
 	@Test
 	public void testCreateSingleCustomTypeInstance() {
-		StatusType expectedStatus = Status.CREATED;
+		StatusType expected = Status.CREATED;
 		sut.setPath("posts");
 		
 		sut.create(getJsonPlaceholderCustomType());
 		
 		Response response = sut.getResponse();
-		assertEquals("Rest service call does not respond expected HTTP status code.", expectedStatus, response.getStatusInfo());
+		StatusType actual = response.getStatusInfo();
+		assertEquals("Rest service call does not respond expected HTTP status code.", expected, actual);
 	}
 
 	private JsonPlaceholderPost getJsonPlaceholderCustomType() {
@@ -66,13 +76,15 @@ public class RestServiceClientCrudIT {
 
 	@Test
 	public void testReadExistingCustomTypeInstance() {
-		int expectedId = 1;
-		sut.setPath("posts/" + expectedId);
+		int expected = 1;
+		sut.setPath("posts/" + expected);
 		
 		JsonPlaceholderPost result = sut.read(JsonPlaceholderPost.class);
 		
 		assertNotNull("Conversion of JSON payload to a custom type was not correct.", result);
-		assertEquals("Custom type has not the correct [id].", expectedId, result.getId());
+		
+		int actual = result.getId();
+		assertEquals("Custom type has not the correct [id].", expected, actual);
 	}
 
 	@Test
@@ -95,12 +107,13 @@ public class RestServiceClientCrudIT {
 		assertFalse("Result does not contain any element.", result.isEmpty());
 		
 		Object firstElementOfResult = result.get(0);
-		assertTrue("Elements do not have the correct type.", firstElementOfResult instanceof JsonPlaceholderPost);
+		boolean resultElementsHaveCorrectType = firstElementOfResult instanceof JsonPlaceholderPost;
+		assertTrue("Elements do not have the correct type.", resultElementsHaveCorrectType);
 	}
 
 	@Test
 	public void testUpdateSingleCustomTypeInstance() {
-		StatusType expectedStatus = Status.OK;
+		StatusType expected = Status.OK;
 		JsonPlaceholderPost customType = readCustomType();
 		customType.setTitle("Title has been changed.");
 		sut.setPath("posts/" + customType.getId());
@@ -108,7 +121,8 @@ public class RestServiceClientCrudIT {
 		sut.update(customType);
 		
 		Response response = sut.getResponse();
-		assertEquals("Rest service call does not respond expected HTTP status code.", expectedStatus, response.getStatusInfo());
+		StatusType actual = response.getStatusInfo();
+		assertEquals("Rest service call does not respond expected HTTP status code.", expected, actual);
 	}
 
 	private JsonPlaceholderPost readCustomType() {
@@ -120,14 +134,13 @@ public class RestServiceClientCrudIT {
 
 	@Test
 	public void testDeleteSingleCustomTypeInstance() {
-		StatusType expectedStatus = Status.OK;
-		sut.setPath("posts");
-		
+		StatusType expected = Status.OK;
+
 		// We want to delete resource 'posts' with id '1' => 'posts/1'.
-		String pathToResourceId = "1";
-		sut.delete(pathToResourceId);
+		sut.delete("posts/1");
 		
 		Response response = sut.getResponse();
-		assertEquals("Rest service call does not respond expected HTTP status code.", expectedStatus, response.getStatusInfo());
+		StatusType actual = response.getStatusInfo();
+		assertEquals("Rest service call does not respond expected HTTP status code.", expected, actual);
 	}
 }
